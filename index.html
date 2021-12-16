@@ -49,6 +49,9 @@ const starTexture = loader.load("images/galaxy_starfield.png")
 const moonTexture = loader.load("images/moon_texture.jpg")
 const sunTexture = loader.load("images/sun.jpg")
 const sunFlare = loader.load("images/R.jpg")
+const sunEmissive = loader.load("images/emissive.jpg")
+const earthSpec = loader.load("images/earthspec1k.jpg")
+const moonbump1k = loader.load("images/moonbump1k.jpg")
 
 var earthGeometry = new THREE.SphereGeometry( 50, 50, 50 );
 var earthMaterial = new THREE.MeshPhongMaterial({
@@ -57,10 +60,13 @@ var earthMaterial = new THREE.MeshPhongMaterial({
     
   // specular: 0x333333,
   // shininess: 25,
-  displacementMap: earthDis,
-  displacementScale: 1,
+  bumpMap: earthDis,
+  bumpScale: 0.5,
   roughnessMap : earthAO,
-  roughness: 1
+  roughness: 1,
+  specularMap: earthSpec,
+  specular: 0x111111
+
 
 });
 
@@ -94,16 +100,21 @@ starField.position.set(0,100,0)
 
 var moonGeometry = new THREE.SphereGeometry(15, 50,50);
 var moonMaterial = new THREE.MeshPhongMaterial({
-  map: moonTexture
+  map: moonTexture,
+  bumpMap: moonbump1k,
+  bumpScale: 0.5
 });
 var moon = new THREE.Mesh(moonGeometry, moonMaterial);
 moon.position.set(135,100,-10);
-// scene.add(moon);
+scene.add(moon);
 
 
 var sunGeometry = new THREE.SphereGeometry(400, 50,50);
 var sunMaterial = new THREE.MeshPhongMaterial({
-  map: sunTexture
+  map: sunTexture,
+  emissiveMap: sunEmissive,
+  emissiveIntensity: 1
+  
 });
 var sun = new THREE.Mesh(sunGeometry, sunMaterial);
 sun.position.set(0,100,-1000);
@@ -112,8 +123,9 @@ scene.add(sun);
 var flare = new THREE.SphereGeometry(400,  50, 50);
 var flareMaterial = new THREE.MeshPhongMaterial({
   map: sunFlare,
+
   transparent: true,
-  opacity: 0.5
+  opacity: 0.1
 });
 
 
@@ -145,9 +157,9 @@ var render = function (actions) {
     moon.rotation.y -= 0.0125;
     moon.rotation.x -= 0.000125;
     sun.rotation.y += 0.0125;
-    sun.rotation.x += 0.00025;
+    
     flareSun.rotation.y += 0.0125;
-    flareSun.rotation.x += 0.00025;
+    
 
     theta += dTheta;
  
